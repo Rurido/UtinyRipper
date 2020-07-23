@@ -13,6 +13,8 @@ namespace uTinyRipper.Project
 {
 	public abstract class ExportCollection : IExportCollection
 	{
+		public static bool ShouldExportMeta = false;
+
 		static ExportCollection()
 		{
 			string invalidChars = new string(Path.GetInvalidFileNameChars());
@@ -22,6 +24,9 @@ namespace uTinyRipper.Project
 
 		protected static void ExportMeta(IExportContainer container, Meta meta, string filePath)
 		{
+			if (!ShouldExportMeta)
+				return;
+
 			string metaPath = $"{filePath}{MetaExtension}";
 			using (var fileStream = FileUtils.CreateVirtualFile(metaPath))
 			using (var stream = new BufferedStream(fileStream))
