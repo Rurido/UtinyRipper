@@ -11,6 +11,9 @@ namespace uTinyRipper
 {
 	public abstract class PlatformGameStructure
 	{
+
+		public static bool ShouldCheckMagicBytes { get; set; } = true;
+
 		public static bool IsPrimaryEngineFile(string fileName)
 		{
 			if (fileName == MainDataName)
@@ -162,12 +165,32 @@ namespace uTinyRipper
 		{
 			foreach (FileInfo file in root.EnumerateFiles())
 			{
-				if (file.Extension == AssetBundleExtension)
+				if (file.Extension == AssetBundleExtension || CheckForAssetBundleMagicBytes(file))
 				{
 					string name = Path.GetFileNameWithoutExtension(file.Name).ToLowerInvariant();
 					AddAssetBundle(files, name, file.FullName);
 				}
 			}
+		}
+
+		protected bool CheckForAssetBundleMagicBytes(FileInfo file)
+		{
+			if (!ShouldCheckMagicBytes)
+				return false;
+
+			using (var reader = file.OpenRead())
+			{
+				try
+				{
+					var buffer = new byte[AssetBundleMagicBytes.Length];
+					int result = reader.Read(buffer, 0, buffer.Length);
+					if (result == buffer.Length)
+					{
+						return buffer.SequenceEqual(AssetBundleMagicBytes);
+					}
+				} catch { }
+			}
+			return false;
 		}
 
 		protected void CollectAssetBundlesRecursivly(DirectoryInfo root, IDictionary<string, string> files)
@@ -262,6 +285,7 @@ namespace uTinyRipper
 
 		protected static readonly Regex s_levelTemplate = new Regex($@"^level(0|[1-9][0-9]*)({MultiFileStream.MultifileRegPostfix}0)?$", RegexOptions.Compiled);
 		protected static readonly Regex s_sharedAssetTemplate = new Regex(@"^sharedassets[0-9]+\.assets", RegexOptions.Compiled);
+		protected static readonly byte[] AssetBundleMagicBytes = new byte[] { 85, 110, 105, 116, 121, 70, 83, 0 }; //UnityFS\0
 
 		protected const string DataFolderName = "Data";
 		protected const string ManagedName = "Managed";
