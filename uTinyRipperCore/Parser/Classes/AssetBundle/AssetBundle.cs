@@ -146,10 +146,18 @@ namespace uTinyRipper.Classes
 
 		protected override YAMLMappingNode ExportYAMLRoot(IExportContainer container)
 		{
-			throw new NotSupportedException();
+			YAMLMappingNode node = base.ExportYAMLRoot(container);
+			YAMLMappingNode containerNode = new YAMLMappingNode();
+			foreach (KeyValuePair<string, AssetBundles.AssetInfo> kv in Container)
+			{
+				containerNode.Add(kv.Key, kv.Value.Asset.ExportYAML(container));	
+			}
+			node.Add(ContainerName, containerNode);
+			node.Add("m_MainAsset", MainAsset.Asset.ExportYAML(container));
+			return node;
 		}
 
-		public override string ExportExtension => throw new NotSupportedException();
+		public override string ExportExtension => "assetbundle.yaml";
 
 		public PPtr<Object>[] PreloadTable { get; set; }
 		public KeyValuePair<string, AssetBundles.AssetInfo>[] Container { get; set; }

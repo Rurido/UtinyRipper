@@ -158,6 +158,8 @@ namespace uTinyRipper
 					return new CharacterController(assetInfo);
 				case ClassIDType.AssetBundle:
 					return new AssetBundle(assetInfo);
+				case ClassIDType.AssetBundleManifest:
+					return new AssetBundleManifest(assetInfo);
 				case ClassIDType.WheelCollider:
 					return new WheelCollider(assetInfo);
 				case ClassIDType.ResourceManager:

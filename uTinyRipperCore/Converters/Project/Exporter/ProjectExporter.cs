@@ -23,7 +23,7 @@ namespace uTinyRipper.Converters
 
 			OverrideDummyExporter(ClassIDType.MonoManager, true, false);
 			OverrideDummyExporter(ClassIDType.BuildSettings, false, false);
-			OverrideDummyExporter(ClassIDType.AssetBundle, true, false);
+			//OverrideDummyExporter(ClassIDType.AssetBundle, true, false);
 			OverrideDummyExporter(ClassIDType.ResourceManager, true, false);
 			OverrideDummyExporter(ClassIDType.PreloadData, true, false);
 			OverrideDummyExporter(ClassIDType.EditorSettings, false, false);
@@ -39,6 +39,10 @@ namespace uTinyRipper.Converters
 			OverrideDummyExporter(ClassIDType.KTXImporter, false, false);
 			OverrideDummyExporter(ClassIDType.IHVImageFormatImporter, false, false);
 			OverrideDummyExporter(ClassIDType.SpriteAtlas, false, false);
+
+			//Serialize AssetBundle+Manifest into YAML
+			OverrideYamlExporter(ClassIDType.AssetBundle);
+			OverrideYamlExporter(ClassIDType.AssetBundleManifest);
 
 			OverrideYamlExporter(ClassIDType.GameObject);
 			OverrideYamlExporter(ClassIDType.Transform);
